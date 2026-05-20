@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday - Princess Audrey Acavira A</title>
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👑</text></svg>">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        
+        /* Loading Screen */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .music-bars {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            height: 60px;
+            margin: 30px 0;
+            gap: 6px;
+        }
+
+        .bar {
+            width: 8px;
+            background: linear-gradient(to top, #ff3a5e, #ff6b8b);
+            border-radius: 4px;
+            animation: musicBars 1.5s ease-in-out infinite;
+        }
+
+        .bar:nth-child(1) { animation-delay: 0.1s; height: 20px; }
+        .bar:nth-child(2) { animation-delay: 0.2s; height: 35px; }
+        .bar:nth-child(3) { animation-delay: 0.3s; height: 50px; }
+        .bar:nth-child(4) { animation-delay: 0.4s; height: 40px; }
+        .bar:nth-child(5) { animation-delay: 0.5s; height: 30px; }
+        .bar:nth-child(6) { animation-delay: 0.6s; height: 25px; }
+        .bar:nth-child(7) { animation-delay: 0.7s; height: 35px; }
+
+        @keyframes musicBars {
+            0%, 100% { transform: scaleY(0.5); }
+            50% { transform: scaleY(1); }
+        }
+
+        .loading-text {
+            font-size: 18px;
+            color: white;
+            margin-top: 20px;
+            font-weight: 600;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Wave Background */
+        .wave-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(45deg, 
+                rgba(255, 58, 94, 0.1) 0%, 
+                rgba(255, 107, 139, 0.08) 25%, 
+                rgba(255, 193, 7, 0.05) 50%, 
+                rgba(255, 107, 139, 0.08) 75%, 
+                rgba(255, 58, 94, 0.1) 100%);
+            animation: waveMove 15s ease-in-out infinite;
+            border-radius: 40% 45% 35% 40%;
+        }
+
+        .wave:nth-child(1) { 
+            animation-duration: 20s; 
+            opacity: 0.6;
+        }
+
+        .wave:nth-child(2) { 
+            animation-duration: 25s; 
+            animation-delay: -5s;
+            opacity: 0.4;
+        }
+
+        .wave:nth-child(3) { 
+            animation-duration: 30s; 
+            animation-delay: -2s;
+            opacity: 0.2;
+        }
+
+        @keyframes waveMove {
+            0%, 100% { transform: translateX(0) rotate(0deg); }
+            50% { transform: translateX(-25%) rotate(2deg); }
+        }
+
+        /* Body */
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* Ikon Pesan Ulang Tahun */
+        .birthday-message-icon {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 22px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        
+        .birthday-message-icon:hover {
+            transform: scale(1.1);
+            color: #ff3a5e;
+        }
+        
+        /* Modal Ucapan */
+        .birthday-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .birthday-modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            padding: 40px 30px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+            color: white;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            animation: modalPop 0.5s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        @keyframes modalPop {
+            0% { transform: scale(0.8) translateY(20px); opacity: 0; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+        
+        .modal-content h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        .modal-content p {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+        
+        .close-modal {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .close-modal:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+        
+        /* Player Styles */
+        .player {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 380px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            z-index: 10;
+        }
+        
+        .cover-container {
+            position: relative;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+        
+        .cover {
+            width: 100%;
+            height: 280px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            display: block;
+            object-fit: cover;
+            background: linear-gradient(135deg, #ff3a5e 0%, #ff6b8b 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 48px;
+        }
+        
+        .cover-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 15px;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .play-btn {
+            position: absolute;
+            bottom: -20px;
+            right: 20px;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: #ff3a5e;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 58, 94, 0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+        
+        .play-btn:hover {
+            transform: scale(1.05);
+            background: #ff2a4e;
+        }
+        
+        .info {
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .title {
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 5px;
+            letter-spacing: 0.5px;
+        }
+        
+        .artist {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 500;
+        }
+        
+        .progress-container {
+            margin-bottom: 20px;
+        }
+        
+        .time {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .time span {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 500;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .progress {
+            height: 100%;
+            width: 0%;
+            background: #ff3a5e;
+            border-radius: 3px;
+            transition: width 0.1s linear;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .controls button {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 10px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .controls button:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .controls .main-controls {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .controls .side-controls {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .controls .fa-heart {
+            color: rgba(255, 255, 255, 0.7);
+            transition: color 0.3s ease;
+        }
+        
+        .controls .fa-heart.active {
+            color: #ff3a5e;
+        }
+
+        .spotify-btn {
+            margin-top: 20px;
+            width: 100%;
+            background: linear-gradient(135deg, #1DB954, #1ed760);
+            border: none;
+            padding: 12px;
+            border-radius: 25px;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .spotify-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(29, 185, 84, 0.3);
+        }
+        
+        @media (max-width: 480px) {
+            .player {
+                padding: 25px;
+            }
+            
+            .title {
+                font-size: 18px;
+            }
+            
+            .play-btn {
+                width: 60px;
+                height: 60px;
+                font-size: 20px;
+            }
+            
+            .birthday-message-icon {
+                top: 15px;
+                right: 15px;
+                width: 45px;
+                height: 45px;
+                font-size: 20px;
+            }
+            
+            .cover {
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loading-content">
+            <div class="music-bars">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+            <div class="loading-text">Preparing a special surprise for Princess Audrey...</div>
+        </div>
+    </div>
+
+    <!-- Wave Background -->
+    <div class="wave-background">
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+    </div>
+
+    <!-- Ikon Pesan Ulang Tahun -->
+    <div class="birthday-message-icon" id="messageIcon">
+        <i class="fas fa-gift"></i>
+    </div>
+
+    <!-- Modal Ucapan Ulang Tahun -->
+    <div class="birthday-modal" id="birthdayModal">
+        <div class="modal-content">
+            <h2>🎉 Happy Birthday, Princess Audrey! 👑</h2>
+            <p>On your special day, may every second be filled with happiness, every hour bring blessings, and every day be full of love. Keep shining like the star you are!</p>
+            <p>Enjoy these songs as a special gift from the heart 🎵</p>
+            <button class="close-modal" id="closeModal">Close Message</button>
+        </div>
+    </div>
+
+    <!-- Music Player -->
+    <div class="player">
+        <div class="cover-container">
+            <img src="Audrey.jpg" alt="Princess Audrey Cover" class="cover-img" id="coverImage">
+            <button class="play-btn" id="playBtn">
+                <i class="fas fa-play"></i>
+            </button>
+        </div>
+        
+        <div class="info">
+            <h1 class="title" id="songTitle">Happy Birthday</h1>
+            <p class="artist" id="songArtist">Princess Audrey Acavira A</p>
+        </div>
+        
+        <div class="progress-container">
+            <div class="time">
+                <span id="currentTime">00:00</span>
+                <span id="duration">00:00</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <div class="side-controls">
+                <button id="likeBtn">
+                    <i class="fas fa-heart"></i>
+                </button>
+                <button id="shareBtn">
+                    <i class="fas fa-share-alt"></i>
+                </button>
+            </div>
+            
+            <div class="main-controls">
+                <button id="prevBtn">
+                    <i class="fas fa-step-backward"></i>
+                </button>
+                <button id="playPauseBtn">
+                    <i class="fas fa-play"></i>
+                </button>
+                <button id="nextBtn">
+                    <i class="fas fa-step-forward"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Spotify Button -->
+        <button class="spotify-btn" id="spotifyBtn">
+            <i class="fab fa-spotify"></i> Listen on Spotify
+        </button>
+        
+        <!-- Audio Element -->
+        <audio id="audio">
+            <source src="HappyBirthDay.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+
+    <script>
+        // Playlist Data
+        const playlist = [
+            {
+                title: "Happy Birthday",
+                artist: "Princess Audrey Acavira A",
+                file: "HappyBirthDay.mp3",
+                cover: "Audrey.jpg"
+            },
+            {
+                title: "Mind Games",
+                artist: "Sickick",
+                file: "SickickMindGames.mp3",
+                cover: "Audrey2.jpg"
+            },
+            {
+                title: "The Fate of Ophelia",
+                artist: "Princess Audrey Acavira A",
+                file: "TheFateofOphelia.mp3",
+                cover: "Audrey3.jpg"
+            },
+            {
+                title: "Shape of My Heart",
+                artist: "Princess Audrey Acavira A",
+                file: "ShapeofMyHeart.mp3",
+                cover: "Audrey4.jpg"
+            },
+            {
+                title: "Confident",
+                artist: "Princess Audrey Acavira A",
+                file: "Confident.mp3",
+                cover: "Audrey5.jpg"
+            }
+        ];
+
+        let currentSongIndex = 0;
+        let isPlaying = false;
+        let isLiked = false;
+
+        // DOM Elements
+        const audio = document.getElementById('audio');
+        const playBtn = document.getElementById('playBtn');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const likeBtn = document.getElementById('likeBtn');
+        const likeIcon = likeBtn.querySelector('i');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const shareBtn = document.getElementById('shareBtn');
+        const spotifyBtn = document.getElementById('spotifyBtn');
+        const progress = document.getElementById('progress');
+        const currentTimeEl = document.getElementById('currentTime');
+        const durationEl = document.getElementById('duration');
+        const songTitleEl = document.getElementById('songTitle');
+        const songArtistEl = document.getElementById('songArtist');
+        const coverImage = document.getElementById('coverImage');
+
+        // Format time function
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return "00:00";
+            const min = Math.floor(seconds / 60);
+            const sec = Math.floor(seconds % 60);
+            return `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+        }
+
+        // Load song function
+        function loadSong(index) {
+            const song = playlist[index];
+            songTitleEl.textContent = song.title;
+            songArtistEl.textContent = song.artist;
+            coverImage.src = song.cover;
+            audio.src = song.file;
+            
+            // Reset progress
+            progress.style.width = '0%';
+            currentTimeEl.textContent = '00:00';
+            
+            // Load and set duration when metadata loaded
+            audio.addEventListener('loadedmetadata', function onMetadata() {
+                durationEl.textContent = formatTime(audio.duration);
+                audio.removeEventListener('loadedmetadata', onMetadata);
+            });
+        }
+
+        // Play song
+        function playSong() {
+            audio.play().catch(error => {
+                console.log('Error playing audio:', error);
+            });
+            isPlaying = true;
+            updatePlayButtons(true);
+        }
+
+        // Pause song
+        function pauseSong() {
+            audio.pause();
+            isPlaying = false;
+            updatePlayButtons(false);
+        }
+
+        // Update play buttons
+        function updatePlayButtons(playing) {
+            const icon = playing ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
+            playBtn.innerHTML = icon;
+            playPauseBtn.innerHTML = icon;
+        }
+
+        // Toggle play/pause
+        function togglePlay() {
+            if (isPlaying) {
+                pauseSong();
+            } else {
+                playSong();
+            }
+        }
+
+        // Next song
+        function nextSong() {
+            currentSongIndex = (currentSongIndex + 1) % playlist.length;
+            loadSong(currentSongIndex);
+            if (isPlaying) {
+                playSong();
+            }
+        }
+
+        // Previous song
+        function prevSong() {
+            currentSongIndex = (currentSongIndex - 1 + playlist.length) % playlist.length;
+            loadSong(currentSongIndex);
+            if (isPlaying) {
+                playSong();
+            }
+        }
+
+        // Update progress bar
+        function updateProgress() {
+            if (audio.duration > 0) {
+                const progressPercent = (audio.currentTime / audio.duration) * 100;
+                progress.style.width = `${progressPercent}%`;
+                currentTimeEl.textContent = formatTime(audio.currentTime);
+            }
+        }
+
+        // Set progress bar on click
+        function setProgress(e) {
+            const width = this.clientWidth;
+            const clickX = e.offsetX;
+            const duration = audio.duration;
+            if (duration > 0) {
+                audio.currentTime = (clickX / width) * duration;
+            }
+        }
+
+        // Toggle like
+        function toggleLike() {
+            isLiked = !isLiked;
+            likeIcon.classList.toggle('active', isLiked);
+            
+            // Save to localStorage
+            localStorage.setItem('likedSong', isLiked ? currentSongIndex : '');
+        }
+
+        // Share function
+        function shareSong() {
+            const song = playlist[currentSongIndex];
+            const shareText = `Listening to "${song.title}" by ${song.artist} - A birthday gift for Princess Audrey Acavira A! 🎂👑`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Happy Birthday - Princess Audrey',
+                    text: shareText,
+                    url: window.location.href,
+                }).catch((error) => console.log('Error sharing:', error));
+            } else {
+                navigator.clipboard.writeText(shareText + ' ' + window.location.href)
+                    .then(() => {
+                        const originalHTML = shareBtn.innerHTML;
+                        shareBtn.innerHTML = '<i class="fas fa-check"></i>';
+                        setTimeout(() => {
+                            shareBtn.innerHTML = originalHTML;
+                        }, 2000);
+                    })
+                    .catch(err => {
+                        console.log('Failed to copy: ', err);
+                    });
+            }
+        }
+
+        // Spotify link
+        function openSpotify() {
+            window.open('https://open.spotify.com/playlist/4kB6UDIi386IUNrIVHjguh?si=PkB5vIeXQbiAccsuAL076w', '_blank');
+        }
+
+        // Loading screen logic
+        setTimeout(() => {
+            const loadingScreen = document.getElementById('loading-screen');
+            loadingScreen.style.opacity = '0';
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+            }, 500);
+        }, 2500);
+
+        // Birthday Message Logic
+        const messageIcon = document.getElementById('messageIcon');
+        const birthdayModal = document.getElementById('birthdayModal');
+        const closeModal = document.getElementById('closeModal');
+
+        messageIcon.addEventListener('click', () => {
+            birthdayModal.classList.add('active');
+        });
+
+        closeModal.addEventListener('click', () => {
+            birthdayModal.classList.remove('active');
+        });
+
+        birthdayModal.addEventListener('click', (e) => {
+            if (e.target === birthdayModal) {
+                birthdayModal.classList.remove('active');
+            }
+        });
+
+        // Event Listeners
+        playBtn.addEventListener('click', togglePlay);
+        playPauseBtn.addEventListener('click', togglePlay);
+        prevBtn.addEventListener('click', prevSong);
+        nextBtn.addEventListener('click', nextSong);
+        likeBtn.addEventListener('click', toggleLike);
+        shareBtn.addEventListener('click', shareSong);
+        spotifyBtn.addEventListener('click', openSpotify);
+        
+        // Audio event listeners
+        audio.addEventListener('timeupdate', updateProgress);
+        audio.addEventListener('ended', () => {
+            nextSong();
+        });
+        
+        // Progress bar click
+        const progressBar = document.querySelector('.progress-bar');
+        progressBar.addEventListener('click', setProgress);
+
+        // Load saved like status
+        const savedLike = localStorage.getItem('likedSong');
+        if (savedLike !== '' && savedLike !== null && parseInt(savedLike) === currentSongIndex) {
+            isLiked = true;
+            likeIcon.classList.add('active');
+        }
+
+        // Initial load
+        loadSong(0);
+    </script>
+</body>
+</html>
